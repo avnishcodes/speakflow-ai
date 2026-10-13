@@ -1,0 +1,32 @@
+.venv/
+__pycache__/
+*.py[cod]
+backend/.env
+.env
+.DS_Store
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpeakFlow AI — Teleprompter & Speaking Coach</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">S</span><div><strong>SpeakFlow AI</strong><small>Teleprompter & Speaking Coach</small></div></div>
+    <div class="top-actions">
+      <span id="statusPill" class="status-pill">Ready to set up</span>
+      <button id="settingsToggle" class="button button-ghost" type="button">Studio controls</button>
+      <button id="coachNavButton" class="button button-primary" type="button">AI Coach</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="intro" id="recordingHero">
+      <div>
+        <p class="eyebrow">YOUR PERSONAL SPEAKING STUDIO</p>
+        <h1>Speak naturally.<br><span>Let your ideas flow.</span></h1>
+        <p class="subheading">Read your script, record your video, then get practical AI feedback.</p>
+      </div>
+      <div class="mode-switch" role="group" aria-label="Layout">
+        <button id="splitMode" class="mode-button active" type="button">Split screen</button>
+        <button id="overlayMode" class="mode-button" type="button">Script overlay</button>
+      </div>
+    </section>
+
+    <section id="settingsPanel" class="settings-panel" aria-label="Teleprompter studio controls">
+      <div class="settings-heading"><div><h2>Studio controls</h2><p>Set your reading pace and recording setup.</p></div><button id="closeSettings" class="icon-button" aria-label="Hide studio controls" type="button">×</button></div>
+      <div class="settings-grid">
+        <label>Script position
+          <select id="scriptPosition"><option value="left">Left</option><option value="right">Right</option></select>
+        </label>
+        <label>Script font size <output id="fontSizeOutput">26 px</output>
+          <input id="fontSize" type="range" min="16" max="44" value="26">
+        </label>
+        <label>Teleprompter speed <output id="wpmOutput">150 WPM</output>
+          <input id="wpm" type="range" min="10" max="500" step="1" value="150">
+        </label>
+        <label>Camera
+          <select id="cameraSelect"><option value="">Default camera</option></select>
+        </label>
+        <label>Microphone
+          <select id="micSelect"><option value="">Default microphone</option></select>
+        </label>
+        <label class="check-setting"><input id="mirrorCamera" type="checkbox" checked> Mirror camera preview</label>
+        <label class="check-setting"><input id="autoScroll" type="checkbox" checked> Auto-scroll while recording</label>
+        <label class="check-setting"><input id="mirrorScript" type="checkbox"> Mirror teleprompter text</label>
+        <label class="check-setting"><input id="flipScript" type="checkbox"> Flip teleprompter text vertically</label>
+      </div>
+      <p class="hint">Camera and microphone permissions are requested when you click “Enable camera”.</p>
+    </section>
+
+    <section id="recordingView" class="page-view">
+      <section class="workspace" id="workspace">
+      <article class="panel script-panel" id="scriptPanel">
+        <div class="panel-header"><div><span class="step">01</span><div><h2>Your script</h2><p>Paste your notes or speaking script</p></div></div><button id="clearScript" class="text-button" type="button">Clear</button></div>
+        <textarea id="scriptInput" spellcheck="true" placeholder="Hi everyone! Today I want to talk about...&#10;&#10;Tip: Use short paragraphs and natural language so you can speak comfortably."></textarea>
+        <div class="script-tools">
+          <span id="wordCount">0 words · ~0 min</span>
+          <div class="inline-buttons"><button id="resetScroll" class="button button-light" type="button">Reset scroll</button><button id="scrollToggle" class="button button-light" type="button">Start scrolling</button></div>
+        </div>
+        <div class="reading-preview-wrap"><div class="preview-label">TELEPROMPTER PREVIEW</div><div id="readingPreview" class="reading-preview">Your script preview will appear here.</div></div>
+      </article>
+
+      <article class="panel camera-panel" id="cameraPanel">
+        <div class="panel-header"><div><span class="step">02</span><div><h2>Your camera</h2><p>Frame yourself and check your audio</p></div></div><span id="recordingBadge" class="recording-badge"><span></span> Not recording</span></div>
+        <div class="camera-stage" id="cameraStage">
+          <video id="cameraVideo" autoplay muted playsinline></video>
+          <div id="cameraPlaceholder" class="camera-placeholder"><div class="camera-icon">▣</div><strong>Your camera preview</strong><span>Enable your camera to get started.</span><button id="enableCamera" class="button button-primary" type="button">Enable camera</button></div>
+          <div id="overlayScript" class="overlay-script hidden"></div>
+          <div id="countdown" class="countdown hidden">3</div>
+          <div class="camera-label">LIVE PREVIEW</div>
+        </div>
+        <div class="recording-controls">
+          <button id="recordButton" class="button button-record" type="button" disabled><span class="record-dot"></span> Start recording</button>
+          <button id="pauseButton" class="button button-light" type="button" disabled>Pause</button>
+          <button id="stopButton" class="button button-light" type="button" disabled>Stop</button>
+          <button id="downloadButton" class="button button-light" type="button" disabled>Download video</button>
+        </div>
+        <div class="recording-meta" aria-live="polite"><span id="timer">00:00</span><span id="recordingNote">Your video is saved locally when you download it.</span></div>
+        <div id="playbackWrap" class="playback-wrap hidden"><h3>Recording preview</h3><video id="playbackVideo" controls playsinline></video></div>
+      </article>
+      </section>
+      <div class="coach-navigation">
+        <p>Finished recording? Review your transcript and get focused speaking feedback.</p>
+        <button id="getFeedbackButton" class="button button-primary" type="button">Get AI Feedback</button>
+      </div>
+    </section>
+
+    <section id="coachView" class="page-view hidden" aria-labelledby="coachViewTitle">
+      <div class="coach-page-heading">
+        <div>
+          <p class="eyebrow">YOUR PERSONAL SPEAKING COACH</p>
+          <h2 id="coachViewTitle">AI speaking coach</h2>
+          <p class="subheading">Review your transcript and get practical feedback for your next practice.</p>
+        </div>
+        <button id="backToRecordingButton" class="button button-light" type="button">Back to recording</button>
+      </div>
+      <section class="panel coach-panel">
+      <div class="panel-header"><div><span class="step">03</span><div><h2>AI speaking coach</h2><p>Get feedback you can use in your next practice</p></div></div><span class="ai-chip">GEMINI AI</span></div>
+      <div class="coach-grid">
+        <div class="transcript-box"><label for="transcriptInput">Speech transcript</label><p class="hint">Chrome speech recognition fills this during recording when available. You can also paste or correct the transcript yourself.</p><textarea id="transcriptInput" placeholder="Your recognized speech will appear here. You can edit it before analysis..."></textarea><div class="transcript-actions"><span id="speechStatus">Speech recognition not started</span><button id="clearTranscript" class="text-button" type="button">Clear transcript</button></div><p id="privacyNote" class="privacy-note">Recordings stay local. Audio is sent to the configured Gemini API only when you choose Analyze speech.</p></div>
+        <div class="analysis-box"><div class="analysis-title"><div><h3>Your feedback</h3><p>Grammar, fluency, vocabulary, pronunciation and sentence structure.</p></div><button id="analyzeButton" class="button button-primary" type="button">Analyze speech</button></div><div id="analysisResult" class="analysis-result"><div class="empty-state"><span>✦</span><strong>Your feedback will appear here</strong><p>Record a practice video or paste a transcript, then select Analyze speech.</p></div></div></div>
+      </div>
+      </section>
+    </section>
+    <footer><span>SpeakFlow AI · Built for better speaking practice</span><span>Privacy-first: recordings stay local unless you choose analysis or download.</span></footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
