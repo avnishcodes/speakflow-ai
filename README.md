@@ -1,109 +1,228 @@
-# SpeakFlow AI — Teleprompter & Speaking Coach
+# SpeakFlow AI — Teleprompter & AI Speaking Coach 🎙️
 
-A beginner-friendly local web app with a split-screen or script-overlay teleprompter, webcam recording, pause/resume, local video download, speech transcription, and Gemini-powered transcript feedback.
+**Practise confidently. Record naturally. Improve with AI.**
 
-## Features in this MVP
+SpeakFlow AI is a web application that helps users practise speeches, presentations, and communication skills using a teleprompter, webcam recording, speech transcription, and AI-powered feedback.
 
-- Editable script and word-count estimate
-- Split-screen and script-overlay layouts
-- Choose whether the script panel is left or right in split-screen mode
-- Font-size and scrolling-speed settings
-- Camera and microphone selectors
-- Webcam preview, countdown, record, pause/resume, stop, playback and `.webm` download
-- Chrome speech recognition for transcript capture
-- FastAPI endpoint that asks Gemini for structured feedback on grammar, fluency, vocabulary, pronunciation and sentence structure
-- Recordings stay in the browser; only the transcript and optional audio-only recording are sent when you choose analysis
-- The frontend uses same-origin API requests by default in a hosted deployment; local port 5500 automatically targets the backend on port 8000. Set `window.SPEAKFLOW_API_BASE` before `script.js` when the frontend and backend use different production hosts.
+## 🌐 Live Demo
 
-## Requirements
+- **Live Application:** https://speakflow-ai.netlify.app/
+- **Backend API:** https://speakflow-ai-backend.onrender.com
+- **API Documentation:** https://speakflow-ai-backend.onrender.com/docs
 
-- Windows 10/11
-- Python 3.10+ (Python 3.11 or 3.12 recommended)
-- Google Chrome
-- Gemini API key
+> Note: The backend is hosted on Render. On the free tier, it may take some time to respond after a period of inactivity.
 
-## 1. Set up the backend (PowerShell)
+## ✨ Features
 
-Open PowerShell in the `speakflow_ai` project folder:
+### 📝 Teleprompter
+- Write and edit your speaking script.
+- Estimate script word count.
+- Choose between split-screen and script-overlay layouts.
+- Position the script panel on the left or right.
+- Adjust font size and scrolling speed.
 
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r backend\requirements.txt
-Copy-Item backend\.env.example backend\.env
+### 🎥 Recording Studio
+- Access your webcam and microphone.
+- Select available camera and microphone devices.
+- Preview your camera before recording.
+- Start recording with a countdown.
+- Pause, resume, and stop recordings.
+- Play back and download recordings in `.webm` format.
+
+### 🎤 Speech Transcription
+- Capture spoken words using browser speech recognition when supported.
+- Review, edit, or paste your transcript manually.
+- Practise speaking using your own script or topic.
+
+### 🤖 AI Speaking Coach
+- Generate feedback using Google's Gemini API.
+- Review grammar and sentence structure.
+- Get feedback on fluency and vocabulary.
+- Receive pronunciation-related feedback based on the available transcript or audio input.
+- Use suggestions to improve your next practice session.
+
+### 🔒 Privacy Considerations
+- Video recordings are processed and stored locally in the browser unless you choose to download them.
+- When you request AI analysis, the configured backend may send the transcript and optional audio input to Google's Gemini API.
+- Avoid submitting confidential or sensitive information during practice.
+
+## 🛠️ Tech Stack
+
+| Component | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Python, FastAPI |
+| AI Integration | Google Gemini API |
+| API Server | Uvicorn |
+| Frontend Deployment | Netlify |
+| Backend Deployment | Render |
+| Browser APIs | MediaRecorder, Speech Recognition |
+
+## 🏗️ Project Structure
+
+```text
+speakflow_ai/
+├── backend/
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── .env.example
+│   └── .env
+├── frontend/
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+├── tests/
+├── .gitignore
+└── README.md
 ```
 
-Open `backend\.env` and replace `paste_your_api_key_here` with your Gemini API key. Keep this file private; do not commit it to a public repository.
+The `.env` file contains local secrets and must not be committed to GitHub.
 
-For a hosted deployment, also set `FRONTEND_ORIGINS` to the exact comma-separated HTTPS origin(s) serving the frontend. Do not include `null` or wildcard origins.
+## ⚙️ Run the Project Locally
 
-Run the API:
+### Prerequisites
 
-```powershell
-uvicorn backend.app:app --reload
+- Python 3.10 or a compatible version supported by your dependencies.
+- Google Gemini API key.
+- A recent version of Google Chrome or another supported browser.
+- Git.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/avnishcodes/speakflow-ai.git
+cd speakflow-ai
 ```
 
-Test in your browser:
-- http://127.0.0.1:8000/
-- http://127.0.0.1:8000/docs
+### 2. Create and activate a virtual environment
 
-The analysis endpoint accepts `multipart/form-data` with `transcript`, optional `script`,
-optional `goal`, and an optional audio-only file. Supported audio MIME types include WebM,
-Ogg, WAV, MP3, MP4 and AAC. Uploads are limited by `MAX_AUDIO_BYTES` (10 MB by default);
-the separate video recording is never uploaded for analysis.
+On Windows:
 
-## 2. Run the frontend
-
-Keep the backend terminal running.
-
-In VS Code, install the **Live Server** extension if you do not already have it. Open `frontend/index.html`, right-click it, and select **Open with Live Server**. It commonly opens at `http://127.0.0.1:5500`.
-
-You can also use a second PowerShell terminal from the project root:
-
-```powershell
-py -m http.server 5500 --directory frontend
+```bash
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-Then open http://127.0.0.1:5500.
+### 3. Install backend dependencies
 
-Use `localhost` or `127.0.0.1` for camera permission. Do not open the HTML as a `file://` URL.
+```bash
+pip install -r backend/requirements.txt
+```
 
-## 3. Use the app
+### 4. Configure environment variables
 
-1. Click **Settings** to choose camera/microphone, layout position, text size and scroll speed.
-2. Paste your script.
-3. Click **Enable camera** and allow camera/microphone permissions.
-4. Choose **Split screen** or **Script overlay**. In split screen, use Settings → Script position to move the script left/right.
-5. Click **Start recording**. A short countdown runs before recording.
-6. Pause/resume or stop the recording. Preview it and click **Download video** to save a `.webm` file.
-7. Review the transcript in the AI coach section. Correct speech-recognition mistakes if needed, then click **Analyze speech**. This is when the optional audio-only recording is sent to the configured Gemini API.
+Create `backend/.env` using `backend/.env.example` as a reference.
 
-## Notes and limitations
+Configure the variables expected by your backend, including:
 
-- The app is a local MVP, not yet a production-hosted service.
-- Camera/microphone access requires browser permission and a secure context such as `localhost` or HTTPS.
-- `MediaRecorder` support and output codecs vary by browser; Chrome generally supports WebM.
-- Web Speech API availability and language accuracy vary. This MVP uses `en-IN`; change `recognition.lang` in `frontend/script.js` if needed (for example, `en-US`).
-- Browser speech recognition may use a browser/vendor speech service. Check your browser's privacy settings before using sensitive content.
-- Gemini receives the transcript, script and optional audio-only recording only after you click **Analyze speech**.
-- Transcript-only analysis marks pronunciation and vocal-delivery observations as unavailable. Audio analysis can provide evidence-supported observations about pace, pauses and possible pronunciation, but cannot measure facial expressions, body language or vocal confidence.
-- Do not expose your Gemini API key in frontend JavaScript or a public repository.
-- Before public deployment, add authentication, request limits, stronger CORS settings, privacy disclosures and secure hosting.
+```env
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=your_supported_gemini_model
+```
 
-## Troubleshooting
+Use the model name configured and supported by your deployed application. Do not publish your actual API key.
 
-**Camera button does not work**
-- Use `http://127.0.0.1:5500` or `http://localhost:5500`, not a `file://` URL.
-- Check the camera icon in Chrome's address bar and Windows privacy settings.
-- Close other apps using the camera.
+### 5. Start the backend
 
-**AI analysis fails**
-- Confirm the backend is running at `http://127.0.0.1:8000`.
-- Confirm `backend/.env` contains a valid API key and model name.
-- Restart Uvicorn after editing `.env`.
-- Visit `http://127.0.0.1:8000/docs` to verify the API is running.
-- Temporary Gemini 429/5xx responses use one bounded SDK retry policy and then return a safe retry message. Invalid keys and permission errors are not retried.
+```bash
+cd backend
+uvicorn app:app --host 127.0.0.1 --port 8000 --reload
+```
 
-**Speech recognition is unavailable**
-- Use a current version of Google Chrome and allow microphone access.
-- You can still paste the transcript manually and use AI feedback.
+Backend API:
+
+http://127.0.0.1:8000
+
+Interactive API documentation:
+
+http://127.0.0.1:8000/docs
+
+### 6. Run the frontend
+
+Open a second terminal from the project root and start a local development server for the `frontend` directory.
+
+For example, if you use the VS Code Live Server extension, open `frontend/index.html` and select **Open with Live Server**.
+
+The frontend's local API configuration should point to the backend running on port `8000`. If you change the frontend or backend ports, update the corresponding API configuration.
+
+## 🔌 API Endpoints
+
+The backend provides the following endpoints:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/` | Basic backend response |
+| GET | `/health` | Health check |
+| POST | `/analyze-speaking` | Request AI speaking feedback |
+
+For request schemas and response details, open the interactive API documentation:
+
+https://speakflow-ai-backend.onrender.com/docs
+
+## 🧪 Testing
+
+The project includes a `tests/` directory for automated tests.
+
+Run the tests from the project root after installing the required dependencies:
+
+```bash
+python -m pytest
+```
+
+You can also verify that the deployed backend responds by opening:
+
+https://speakflow-ai-backend.onrender.com/health
+
+## 🩺 Troubleshooting
+
+### AI analysis fails
+- Confirm that the backend is running and reachable.
+- Verify the Gemini API key and configured model.
+- Check the Render service logs for API errors.
+- Confirm that the deployed frontend origin is included in the backend's CORS configuration.
+- Check API quota, model availability, and network errors.
+
+### Speech recognition is unavailable
+- Use an up-to-date browser that supports the Web Speech API.
+- Allow microphone access.
+- Check your browser's microphone permissions.
+- You can manually paste or edit the transcript and still use AI feedback.
+
+### Camera or microphone does not work
+- Allow camera and microphone permissions in the browser.
+- Close other applications that may be using the camera.
+- Use HTTPS for the deployed application or localhost during local development.
+
+### Backend responds slowly
+- The Render free-tier service may sleep after inactivity.
+- Allow time for the backend to start before retrying analysis.
+
+## 🔐 Security
+
+- Never commit `.env` files, API keys, passwords, or other secrets.
+- Keep the Gemini API key on the backend; do not expose it in frontend JavaScript.
+- Configure CORS to allow only the frontend origins you trust.
+- Do not upload confidential recordings or transcripts to third-party services without understanding their data-handling policies.
+
+## 🚀 Future Improvements
+
+Potential enhancements include:
+
+- Speaking pace and filler-word analysis.
+- Improved transcript accuracy and editing.
+- Practice history and progress tracking.
+- More detailed coaching suggestions.
+- Additional export options and accessibility improvements.
+
+These are potential future enhancements and may not be implemented in the current version.
+
+## 👨‍💻 Author
+
+**Avnish Singh**
+
+- GitHub: https://github.com/avnishcodes
+- Project Repository: https://github.com/avnishcodes/speakflow-ai
+
+---
+
+*SpeakFlow AI — Your practice space for clearer, more confident speaking.*
