@@ -1,8 +1,9 @@
 const LOCAL_API_ORIGINS = new Set(["localhost", "127.0.0.1", "::1"]);
-const API_BASE = window.SPEAKFLOW_API_BASE
-  || (LOCAL_API_ORIGINS.has(window.location.hostname) && window.location.port === "5500"
-    ? `${window.location.protocol}//${window.location.hostname}:8000`
-    : "");
+
+const API_BASE =
+  window.SPEAKFLOW_API_BASE ||
+  "https://speakflow-ai-backend.onrender.com";
+
 
 const $ = (id) => document.getElementById(id);
 const els = {
